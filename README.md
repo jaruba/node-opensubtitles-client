@@ -1,7 +1,7 @@
 
 [![Divhide](http://blog.divhide.com/assets/images/divhide_192px.png)](http://divhide.com/)
 
-# Opensubtitles command line client / nodejs library
+# NPM Opensubtitles package
 
  [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NYVPSL7GBYD6A&lc=US&item_name=Oscar%20Brito&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 [![Build Status](https://travis-ci.org/aetheon/node-opensubtitles-client.png?branch=master)](https://travis-ci.org/aetheon/node-opensubtitles-client)
@@ -15,52 +15,6 @@ After have installed node.js, run the following:
 
 ```shell
 npm install opensubtitles-client -g
-```
-
-## API
-
-### Login - get the login token from the opensubtitle service
-
-```js
-opensubtitles.api.login()
-.then(function(token){
-	// got the auth token
-});
-```
-
-### Search
-
-```js
-
-opensubtitles.api.searchForFile(login, lang, movieFilePath);
-.then(functions(results){
-	//got the search results
-});
-
-opensubtitles.api.searchForTitle(token, lang, text)
-.then(functions(results){
-	//got the search results
-});
-
-opensubtitles.api.searchForTag(token, lang, tag)
-.then(functions(results){
-	//got the search results
-});
-
-opensubtitles.api.search(token, lang, {
-	query: "",
-	tag: ""
-})
-.then(functions(results){
-	//got the search results
-});
-
-```
-
-### Logout - opensubtitles session logout ( please be nice! )
-
-```js
-opensubtitles.api.logout(login);
 ```
 
 ## Command line
@@ -133,21 +87,90 @@ Search and download to the current directory the first 5 subtitles:
 subtitler Cars -lang eng -n 5 --download
 ```
 
-## Contribute
 
-Pull requests are welcome but please make sure the the linting and unit tests are working before you
-do that. Also adding unit tests will increase the acceptance of the pull request by 10000%!
 
-``` bash
+## Javascript API:
 
-grunt dev
+Login - get the login token from the opensubtitle service
 
+```js
+opensubtitles.api.login()
+	.done(function(token){
+		// got the auth token
+	});
+```
+
+Search - search for subtitles
+
+```js
+opensubtitles.api.search(token, lang, text)
+	.done(
+		functions(results){
+			//got the search results
+		}
+	);
+```
+
+Search - search subtitles for a movie file
+
+```js
+opensubtitles.api.searchForFile(login, lang, movieFilePath);
+	.done(
+		functions(results){
+			//got the search results
+		}
+	);
+```
+
+Logout - opensubtitles session logout ( please be nice! )
+
+```js
+opensubtitles.api.logout(login);
+```
+
+Events
+
+```js
+opensubtitles.api.on("login", functions(token){});
+opensubtitles.api.on("search", functions(results){});
+opensubtitles.api.on("error", functions(e){});
+
+opensubtitles.downloader.on("downloading", function(info){});
+opensubtitles.downloader.on("downloaded", function(info){});
 ```
 
 
-## Authors
 
-**Oscar Brito**
+## Integration with rtorrent
 
-+ [github/aetheon](https://github.com/aetheon)
-+ [twitter/aetheon](http://twitter.com/aetheon)
+After rtorrent download is finish you can automatically use subtitler to download it's subtitles. You just have to
+do the following:
+
+On .rtorrent.rc add:
+
+```
+system.method.set_key =event.download.finished,move_complete,"execute=subtitler,$d.get_base_path="
+```
+
+This way the _subtitler_ command will receive the downloaded path has argument and will try to download the subtitles.
+
+
+
+
+Checkout my blogpost on:
+
+<a href="http://blog.divhide.com/2013/07/is-downloading-subtitles-painfull.html">Why this package was created!</a>
+
+<a href="http://blog.divhide.com/2013/07/opensubtitles-client-nodejs-javascript.html">Integration with Rtorrent</a>
+
+<small>
+<p>Visit <a href="http://site.divhide.com">www.divhide.com</a> for more informations, contacts and news about Web Development.</p>
+
+<p>See other blog posts at <a href="http://blog.divhide.com">blog.divhide.com</a>.</p>
+</small>
+
+
+Thanks for all your code [contributions](CONTRIBUTORS.md)!
+
+<a href="https://github.com/aetheon">Oscar Brito</a>
+
